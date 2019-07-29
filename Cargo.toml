@@ -1,12 +1,13 @@
 [package]
 name = "maligned"
-version = "0.0.0"
+version = "0.1.0"
 authors = ["Tyler Hawkes <tyler.hawkes@gmail.com>"]
 edition = "2018"
-description = "Another memory alignment library"
+description = "A complete memory alignment library"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/tylerhawkes/maligned" 
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+alloc = []
+default = ["alloc"]
 
-[dependencies]
