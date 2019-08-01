@@ -33,24 +33,15 @@ pub fn align_first<T, A: Alignment>(t_capacity: usize) -> Vec<T> {
 
 #[cfg(test)]
 macro_rules! assert_alignment {
-  ($l:ty, $s:ty) => {
-    println!(
-      "Aligning types: l: ({}, {}), s: ({}, {})",
-      align_of::<$l>(),
-      size_of::<$l>(),
-      align_of::<$s>(),
-      size_of::<$s>()
-    );
-    std::io::stdout().flush().ok().expect("Could not flush stdout");
-    let v = align_first::<$l, $s>(17);
+  ($t:ty, $a:ty) => {
+    let v = align_first::<$t, $a>(17);
     assert_eq!(v.len(), 0);
-    assert_eq!(v.as_ptr() as usize % align_of::<$l>(), 0);
-    assert_eq!(v.capacity(), 17);
+    assert_eq!(v.as_ptr() as usize % align_of::<$a>(), 0);
+    assert_eq!(v.capacity(), if size_of::<$t>() > 0 { 17 } else { usize::max_value() });
   };
 }
 
 #[cfg(test)]
-#[allow(unused)]
 #[repr(C)]
 struct NonPowerOf2Size {
   a: u8,
@@ -60,7 +51,6 @@ struct NonPowerOf2Size {
 
 #[test]
 fn test_align_first() {
-  use std::io::Write;
   assert_alignment!(Bit8, u8);
   assert_alignment!(Bit16, u16);
   assert_alignment!(Bit32, u32);
@@ -85,6 +75,10 @@ fn test_align_first() {
   assert_alignment!([u16; 197], u32);
   assert_alignment!([A8; 191], A32);
   assert_alignment!([u16; 131], u32);
+  assert_alignment!([u8; 7], A256);
+  assert_alignment!([u8; 0], A32768);
+  struct ZeroSized;
+  assert_alignment!(ZeroSized, A16384);
 }
 
 /// Aligns types and initializes memory to the return value provided by the closure.

@@ -1,6 +1,6 @@
 # Maligned
 
-A more complete alignment crate
+A memory alignment library
 
 ## License
 

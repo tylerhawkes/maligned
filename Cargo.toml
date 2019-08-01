@@ -3,9 +3,12 @@ name = "maligned"
 version = "0.1.0"
 authors = ["Tyler Hawkes <tyler.hawkes@gmail.com>"]
 edition = "2018"
-description = "A complete memory alignment library"
+description = "A memory alignment library"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/tylerhawkes/maligned" 
+repository = "https://github.com/tylerhawkes/maligned"
+readme = "README.md"
+keywords = ["no_std", "static", "array", "align", "aligned", "alignment", "embedded", "alloc"]
+categories = ["embedded", "memory-management", "no-std"]
 
 [features]
 alloc = []
