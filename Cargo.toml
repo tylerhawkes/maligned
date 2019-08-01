@@ -7,10 +7,18 @@ description = "A memory alignment library"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/tylerhawkes/maligned"
 readme = "README.md"
-keywords = ["no_std", "static", "array", "align", "aligned", "alignment", "embedded", "alloc"]
+keywords = ["array", "align", "aligned", "alignment"]
 categories = ["embedded", "memory-management", "no-std"]
 
 [features]
 alloc = []
-default = ["alloc"]
+default = ["alloc", "align-128k"]
+align-1k = []
+align-2k = ["align-1k"]
+align-4k = ["align-2k"]
+align-8k = ["align-4k"]
+align-16k = ["align-8k"]
+align-32k = ["align-16k"]
+align-64k = ["align-32k"]
+align-128k = ["align-64k"]
 

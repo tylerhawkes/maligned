@@ -20,9 +20,9 @@
 //! use maligned::*;
 //! use maligned::AsBytesMut;
 //!
-//! let mut v = vec![A1024::default(); 100];
-//! assert_eq!(v.as_bytes().len(), 1024 * 100);
-//! assert_eq!(v.as_bytes().as_ptr() as usize % std::mem::size_of::<A1024>(), 0);
+//! let mut v = vec![A512::default(); 100];
+//! assert_eq!(v.as_bytes().len(), std::mem::size_of::<A512>() * 100);
+//! assert_eq!(v.as_bytes().as_ptr() as usize % std::mem::align_of::<A512>(), 0);
 //!
 //! v.as_bytes_mut()[0] = 42;
 //! assert_eq!(v[0].as_bytes()[0], 42);

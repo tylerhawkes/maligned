@@ -63,7 +63,7 @@ impl core::fmt::Display for FromByteSliceError {
 macro_rules! impl_alignment_traits {
   {
     $(#[$outer:meta])+
-    $v:vis struct $t:ident or $bit:ident(pub [u8; $c:literal]);
+    $v:vis struct $t:ident or $bit:ident $(or $k_alias:ident)?(pub [u8; $c:literal]);
     test = $test:ident
   }
     => {
@@ -74,6 +74,10 @@ macro_rules! impl_alignment_traits {
     impl Alignment for $t {}
     /// Type alias for an Alignment in bits
     pub type $bit = $t;
+    $(
+    /// Type alias for an Alignment in kilobytes
+    pub type $k_alias = $t;
+    )?
     // Not a trait since const generics aren't stable yet
     #[doc(hidden)]
     impl $t {
@@ -409,83 +413,91 @@ impl_alignment_traits! {
   test = test_a512
 }
 
+#[cfg(feature = "align-1k")]
 impl_alignment_traits! {
   /// Struct representing an alignment of 1024
   ///
   /// This implements the `Alignment` trait and can also be used as a byte buffer
   /// of `[u8; 1024]`. Since `AsBytes` is implemented for a `&[T: AsBytes]` a `&[A1024]`
   /// can be used as a buffer of bytes that will always be aligned to at least 1024 bytes.
-  pub struct A1024 or Bit8192(pub [u8; 1024]);
+  pub struct A1024 or Bit8192 or A1k(pub [u8; 1024]);
   test = test_a1024
 }
 
+#[cfg(feature = "align-2k")]
 impl_alignment_traits! {
   /// Struct representing an alignment of 2048
   ///
   /// This implements the `Alignment` trait and can also be used as a byte buffer
   /// of `[u8; 2048]`. Since `AsBytes` is implemented for a `&[T: AsBytes]` a `&[A2048]`
   /// can be used as a buffer of bytes that will always be aligned to at least 2048 bytes.
-  pub struct A2048 or Bit16384(pub [u8; 2048]);
+  pub struct A2048 or Bit16384 or A2k(pub [u8; 2048]);
   test = test_a2048
 }
 
+#[cfg(feature = "align-4k")]
 impl_alignment_traits! {
   /// Struct representing an alignment of 4096
   ///
   /// This implements the `Alignment` trait and can also be used as a byte buffer
   /// of `[u8; 4096]`. Since `AsBytes` is implemented for a `&[T: AsBytes]` a `&[A4096]`
   /// can be used as a buffer of bytes that will always be aligned to at least 4096 bytes.
-  pub struct A4096 or Bit32768(pub [u8; 4096]);
+  pub struct A4096 or Bit32768 or A4k(pub [u8; 4096]);
   test = test_a4096
 }
 
+#[cfg(feature = "align-8k")]
 impl_alignment_traits! {
   /// Struct representing an alignment of 8192
   ///
   /// This implements the `Alignment` trait and can also be used as a byte buffer
   /// of `[u8; 8192]`. Since `AsBytes` is implemented for a `&[T: AsBytes]` a `&[A8192]`
   /// can be used as a buffer of bytes that will always be aligned to at least 8192 bytes.
-  pub struct A8192 or Bit65536(pub [u8; 8192]);
+  pub struct A8192 or Bit65536 or A8k(pub [u8; 8192]);
   test = test_a8192
 }
 
+#[cfg(feature = "align-16k")]
 impl_alignment_traits! {
   /// Struct representing an alignment of 16384
   ///
   /// This implements the `Alignment` trait and can also be used as a byte buffer
   /// of [`u8; 16384]`. Since `AsBytes` is implemented for a `&[T: AsBytes]` a `&[A16384]`
   /// can be used as a buffer of bytes that will always be aligned to at least 16384 bytes.
-  pub struct A16384 or Bit131072(pub [u8; 16384]);
+  pub struct A16384 or Bit131072 or A16k(pub [u8; 16384]);
   test = test_a16384
 }
 
+#[cfg(feature = "align-32k")]
 impl_alignment_traits! {
   /// Struct representing an alignment of 32768
   ///
   /// This implements the `Alignment` trait and can also be used as a byte buffer
   /// of `[u8; 32768]`. Since `AsBytes` is implemented for a `&[T: AsBytes]` a `&[A32768]`
   /// can be used as a buffer of bytes that will always be aligned to at least 32768 bytes.
-  pub struct A32768 or Bit262144(pub [u8; 32768]);
+  pub struct A32768 or Bit262144 or A32k(pub [u8; 32768]);
   test = test_a32768
 }
 
+#[cfg(feature = "align-64k")]
 impl_alignment_traits! {
   /// Struct representing an alignment of 65536
   ///
   /// This implements the `Alignment` trait and can also be used as a byte buffer
   /// of [u8; 65536]. Since `AsBytes` is implemented for a `&[T: AsBytes]` a `&[A65536]`
   /// can be used as a buffer of bytes that will always be aligned to at least 65536 bytes.
-  pub struct A65536 or Bit524288(pub [u8; 65536]);
+  pub struct A65536 or Bit524288 or A64k(pub [u8; 65536]);
   test = test_a65536
 }
 
+#[cfg(feature = "align-128k")]
 impl_alignment_traits! {
   /// Struct representing an alignment of 131072
   ///
   /// This implements the `Alignment` trait and can also be used as a byte buffer
   /// of [u8; 131072]. Since `AsBytes` is implemented for a `&[T: AsBytes]` a `&[A131072]`
   /// can be used as a buffer of bytes that will always be aligned to at least 131072 bytes.
-  pub struct A131072 or Bit1048576(pub [u8; 131072]);
+  pub struct A131072 or Bit1048576 or A128K(pub [u8; 131072]);
   test = test_a131072
 }
 
@@ -495,8 +507,8 @@ impl_alignment_traits! {
 /// ```
 /// # use maligned::*;
 /// # use std::mem::*;
-/// assert_eq!(size_of::<Aligned<A1024, [u8; 1024]>>(), size_of::<[u8; 1024]>());
-/// assert_eq!(size_of::<Aligned<A2048, [u8; 81920]>>(), size_of::<[u8; 81920]>());
+/// assert_eq!(size_of::<Aligned<A256, [u8; 256]>>(), size_of::<[u8; 256]>());
+/// assert_eq!(size_of::<Aligned<A512, [u8; 81920]>>(), size_of::<[u8; 81920]>());
 /// ```
 #[derive(Clone, Copy, Default, Debug, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct Aligned<A: Alignment, T> {

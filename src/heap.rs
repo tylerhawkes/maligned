@@ -61,7 +61,7 @@ fn test_align_first() {
   assert_alignment!([u32; 2], u64);
   assert_alignment!([u8; 8], u64);
   assert_alignment!([u8; 16], A16);
-  assert_alignment!([u8; 1024], A1024);
+  assert_alignment!([u8; 1024], A512);
   assert_alignment!([u8; 97], u8);
   assert_alignment!([u64; 101], u64);
   assert_alignment!([u8; 103], u8);
@@ -76,9 +76,9 @@ fn test_align_first() {
   assert_alignment!([A8; 191], A32);
   assert_alignment!([u16; 131], u32);
   assert_alignment!([u8; 7], A256);
-  assert_alignment!([u8; 0], A32768);
+  assert_alignment!([u8; 0], A512);
   struct ZeroSized;
-  assert_alignment!(ZeroSized, A16384);
+  assert_alignment!(ZeroSized, A128);
 }
 
 /// Aligns types and initializes memory to the return value provided by the closure.
