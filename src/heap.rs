@@ -2,6 +2,7 @@ use super::*;
 use alloc::boxed::Box;
 use alloc::vec::Vec;
 use core::mem::{align_of, forget, size_of};
+use core::intrinsics::size_of_val;
 
 /// Aligns the first element in a `Vec<T>` to `A`. If the alignment of `A` is less than the alignment of `T` then a `Vec<T>`
 /// with capacity `t_capacity` is returned. This method is safe because structs are always aligned to a power of two so
@@ -23,7 +24,16 @@ pub fn align_first<T, A: Alignment>(t_capacity: usize) -> Vec<T> {
   if min_bytes_to_allocate < bytes_allocated {
     let mut byte_vec = unsafe { Vec::<u8>::from_raw_parts(alignment_vec.as_mut_ptr() as *mut _, min_bytes_to_allocate, bytes_allocated) };
     byte_vec.shrink_to_fit();
+    if byte_vec.len() % size_of::<A>() == 0 {forget(byte_vec)} //<========================== made changes here
+    else {                                                                                //I was under the belief that forgetting the byte vec when it wasn't a multiple of sizeof(A)
+      let mut multipleFinder = size_of::<A>();                                     //would result in the vec pointing at random spaces in memory when told to forget byte_vec
+      while multipleFinder < byte_vec.len(){                                              // so i attempted to make a condition that if byte vec was not a multiple of sizeof(A)
+        multipleFinder = multipleFinder + multipleFinder;                                 // it would re allocate to the correct size. if this doesn't fix the memory leak i would love
+      }                                                                                   // to understand a little better what is going on in this function
+      multipleFinder = (multipleFinder - byte_vec.len()) + byte_vec.len();
+      byte_vec = Vec::with_capacity(multipleFinder);
     forget(byte_vec);
+    } //<===============================================================================================to here
   }
   let type_vec = unsafe { Vec::<T>::from_raw_parts(alignment_vec.as_mut_ptr() as *mut _, 0, t_capacity) };
   forget(alignment_vec);
