@@ -22,18 +22,8 @@ pub fn align_first<T, A: Alignment>(t_capacity: usize) -> Vec<T> {
   let bytes_allocated = alignment_vec.capacity() * size_of::<A>();
   // return bytes to the allocator that aren't needed.
   if min_bytes_to_allocate < bytes_allocated {
-    let mut byte_vec = unsafe { Vec::<u8>::from_raw_parts(alignment_vec.as_mut_ptr() as *mut _, min_bytes_to_allocate, bytes_allocated) };
-    byte_vec.shrink_to_fit();
-    if byte_vec.len() % size_of::<A>() == 0 {forget(byte_vec)} //<========================== made changes here
-    else {                                                                                //I was under the belief that forgetting the byte vec when it wasn't a multiple of sizeof(A)
-      let mut multipleFinder = size_of::<A>();                                     //would result in the vec pointing at random spaces in memory when told to forget byte_vec
-      while multipleFinder < byte_vec.len(){                                              // so i attempted to make a condition that if byte vec was not a multiple of sizeof(A)
-        multipleFinder = multipleFinder + multipleFinder;                                 // it would re allocate to the correct size. if this doesn't fix the memory leak i would love
-      }                                                                                   // to understand a little better what is going on in this function
-      multipleFinder = (multipleFinder - byte_vec.len()) + byte_vec.len();
-      byte_vec = Vec::with_capacity(multipleFinder);
-    forget(byte_vec);
-    } //<===============================================================================================to here
+    let _ = unsafe { Vec::<u8>::from_raw_parts(alignment_vec.as_mut_ptr().add(min_bytes_to_allocate) as *mut _, bytes_allocated - min_bytes_to_allocate, bytes_allocated - min_bytes_to_allocate) };
+    //changes made here ^
   }
   let type_vec = unsafe { Vec::<T>::from_raw_parts(alignment_vec.as_mut_ptr() as *mut _, 0, t_capacity) };
   forget(alignment_vec);
