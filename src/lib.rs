@@ -66,7 +66,7 @@
 //! ```
 
 #![no_std]
-#![cfg_attr(not(test), deny(warnings, clippy::all, clippy::pedantic, missing_docs))]
+#![cfg_attr(all(not(test), feature = "clippy"), deny(warnings, clippy::all, clippy::pedantic, missing_docs))]
 #![deny(unsafe_code)]
 
 #[cfg(feature = "alloc")]
