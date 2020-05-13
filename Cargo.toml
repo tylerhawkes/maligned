@@ -1,6 +1,6 @@
 [package]
 name = "maligned"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Tyler Hawkes <tyler.hawkes@gmail.com>"]
 edition = "2018"
 description = "A memory alignment library"
@@ -12,7 +12,7 @@ categories = ["embedded", "memory-management", "no-std"]
 
 [features]
 alloc = []
-default = ["alloc", "align-128k"]
+default = ["alloc"]
 align-1k = []
 align-2k = ["align-1k"]
 align-4k = ["align-2k"]
@@ -22,3 +22,6 @@ align-32k = ["align-16k"]
 align-64k = ["align-32k"]
 align-128k = ["align-64k"]
 clippy = []
+
+[package.metadata.docs.rs]
+features = ["align-128k"]
