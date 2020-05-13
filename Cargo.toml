@@ -21,4 +21,4 @@ align-16k = ["align-8k"]
 align-32k = ["align-16k"]
 align-64k = ["align-32k"]
 align-128k = ["align-64k"]
-
+clippy = []
