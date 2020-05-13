@@ -1,11 +1,12 @@
 [package]
 name = "maligned"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Tyler Hawkes <tyler.hawkes@gmail.com>"]
 edition = "2018"
 description = "A memory alignment library"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/tylerhawkes/maligned"
+documentation = "https://docs.rs/maligned"
 readme = "README.md"
 keywords = ["array", "align", "aligned", "alignment"]
 categories = ["embedded", "memory-management", "no-std"]
