@@ -34,34 +34,6 @@
 //! assert_eq!(&*a as *const u8 as usize % std::mem::align_of::<A32>(), 0);
 //! ```
 //!
-//! If the `alloc` feature is enabled (it is by default) then there are a few more functions available.
-//! [align_first](heap::align_first) returns an empty Vec with a capacity of at least `capacity` bytes.
-//! Two type parameters are currently required, though the first can be set to `_`, because of the current
-//! interaction between impl traits and generics.
-//! ```
-//! # use maligned::*;
-//! let v: Vec<u8> = align_first::<u8, A256>(1009);
-//! assert_eq!(v.as_ptr() as usize % 256, 0);
-//! assert_eq!(v.capacity(), 1009);
-//! ```
-//!
-//! [align_first_boxed](heap::align_first_boxed), [align_first_boxed_default](heap::align_first_boxed_default),
-//! and [align_first_boxed_cloned](heap::align_first_boxed_cloned) all return a [Box<\[T\]>](alloc::boxed::Box) with the
-//! first element aligned to at least [Alignment](align::Alignment) bytes.
-//! ```
-//! # use maligned::*;
-//! // 3 type parameters. The last one should always be _ until impl traits and generics interact better
-//! let boxed: Box<[Option<u128>]> = align_first_boxed::<_, A512, _>(101, |_|Some(42));
-//! let defaulted: Box<[Option<u128>]> = align_first_boxed_default::<_, A128>(101);
-//! let cloned: Box<[Option<u128>]> = align_first_boxed_cloned::<_, Bit512>(101, Some(42));
-//!
-//! assert_eq!(&*boxed, &vec![Some(42); 101][..]);
-//! assert_eq!(&boxed, &cloned);
-//! assert_eq!(boxed.len(), 101);
-//! assert_eq!(defaulted.len(), 101);
-//! assert_eq!(cloned.len(), 101);
-//! assert_eq!(&*defaulted, &vec![None; 101][..]);
-//! ```
 
 #![no_std]
 #![cfg_attr(all(not(test), feature = "clippy"), deny(warnings, clippy::all, clippy::pedantic))]
